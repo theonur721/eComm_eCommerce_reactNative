@@ -8,4 +8,4 @@
 - axios
 - formik & yup
 - async storage
-# eComm_eCommerce_reactNative
+- linear gradient
