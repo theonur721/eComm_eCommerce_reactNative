@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAppDispatch, useAppSelector } from '../../../store/Hooks';
@@ -35,11 +35,15 @@ const ProfileScreen: React.FC = () => {
     }
   };
 
-  const handleLogoutPress = () => {
-    dispatch(logoutThunk());
+  const handleLogoutPress = async () => {
+    try {
+      await dispatch(logoutThunk()).unwrap();
+    } catch (error) {
+      console.log('LOGOUT ERROR:', error);
+    }
   };
 
-  if (isLoading) {
+  if (isLoading && !user && accessToken) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loaderContainer}>
@@ -52,7 +56,7 @@ const ProfileScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       {user ? (
-        <UserProfile user={user} onLogoutPress={handleLogoutPress} />
+        <UserProfile user={user} onLogoutProfile={handleLogoutPress} />
       ) : (
         <GuestProfile onSubmitLogin={handleLoginSubmit} isLoading={isLoading} />
       )}

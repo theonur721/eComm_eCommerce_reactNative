@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import AuthService from '../../service/Auth.Service';
-import { LoginParams } from '../../models/data/Auth';
-import { User } from '../../models/data/User';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AuthService from '../../service/Auth.Service';
+import type { LoginParams } from '../../models/data/Auth';
+import type { User } from '../../models/data/User';
 
 const STORAGE_KEYS = {
   ACCESS: 'access_token',
@@ -15,12 +15,11 @@ export const loginThunk = createAsyncThunk(
     try {
       const response = await AuthService.login(params);
 
-      // tokenları kaydet
       await AsyncStorage.setItem(STORAGE_KEYS.ACCESS, response.access_token);
       await AsyncStorage.setItem(STORAGE_KEYS.REFRESH, response.refresh_token);
 
       return response;
-    } catch (error: any) {
+    } catch (error) {
       return rejectWithValue('Login failed');
     }
   },
@@ -33,7 +32,7 @@ export const getProfileThunk = createAsyncThunk(
       const token = await AsyncStorage.getItem(STORAGE_KEYS.ACCESS);
 
       if (!token) {
-        throw new Error('No token');
+        return rejectWithValue('No token');
       }
 
       const user: User = await AuthService.getProfile(token);
@@ -45,9 +44,18 @@ export const getProfileThunk = createAsyncThunk(
   },
 );
 
-export const logoutThunk = createAsyncThunk('auth/logout', async () => {
-  await AsyncStorage.removeItem(STORAGE_KEYS.ACCESS);
-  await AsyncStorage.removeItem(STORAGE_KEYS.REFRESH);
+export const logoutThunk = createAsyncThunk(
+  'auth/logout',
+  async (_, { rejectWithValue }) => {
+    try {
+      await AsyncStorage.multiRemove([
+        STORAGE_KEYS.ACCESS,
+        STORAGE_KEYS.REFRESH,
+      ]);
 
-  return true;
-});
+      return true;
+    } catch (error) {
+      return rejectWithValue('Logout failed');
+    }
+  },
+);

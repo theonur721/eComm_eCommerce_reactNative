@@ -11,15 +11,21 @@ const initialState: AuthState = {
   error: null,
 };
 
+const clearAuthState = (state: AuthState) => {
+  state.user = null;
+  state.accessToken = null;
+  state.refreshToken = null;
+  state.isAuthenticated = false;
+  state.isLoading = false;
+  state.error = null;
+};
+
 const AuthSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {},
-
   extraReducers: builder => {
     builder
-
-      // LOGIN
       .addCase(loginThunk.pending, state => {
         state.isLoading = true;
         state.error = null;
@@ -29,34 +35,43 @@ const AuthSlice = createSlice({
         state.accessToken = action.payload.access_token;
         state.refreshToken = action.payload.refresh_token;
         state.isAuthenticated = true;
+        state.error = null;
       })
-      .addCase(loginThunk.rejected, state => {
+      .addCase(loginThunk.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = 'Login failed';
+        state.error =
+          typeof action.payload === 'string' ? action.payload : 'Login failed';
       })
 
-      // PROFILE
       .addCase(getProfileThunk.pending, state => {
         state.isLoading = true;
+        state.error = null;
       })
       .addCase(getProfileThunk.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload.user;
         state.accessToken = action.payload.token;
         state.isAuthenticated = true;
+        state.error = null;
       })
-      .addCase(getProfileThunk.rejected, state => {
-        state.isLoading = false;
-        state.user = null;
-        state.isAuthenticated = false;
+      .addCase(getProfileThunk.rejected, (state, action) => {
+        clearAuthState(state);
+        state.error =
+          typeof action.payload === 'string'
+            ? action.payload
+            : 'Profile fetch failed';
       })
 
-      // LOGOUT
+      .addCase(logoutThunk.pending, state => {
+        clearAuthState(state);
+      })
       .addCase(logoutThunk.fulfilled, state => {
-        state.user = null;
-        state.accessToken = null;
-        state.refreshToken = null;
-        state.isAuthenticated = false;
+        clearAuthState(state);
+      })
+      .addCase(logoutThunk.rejected, (state, action) => {
+        clearAuthState(state);
+        state.error =
+          typeof action.payload === 'string' ? action.payload : 'Logout failed';
       });
   },
 });

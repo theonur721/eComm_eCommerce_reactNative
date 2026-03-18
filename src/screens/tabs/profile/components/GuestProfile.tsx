@@ -7,29 +7,41 @@ import {
   View,
 } from 'react-native';
 import { Formik } from 'formik';
-import { LoginSchema } from '../../../../utils/  ValidationSchemas';
+import { LoginSchema } from '../../../../utils/ValidationSchemas';
+import { COLORS } from '../../../../theme/Colors';
+import normalize from '../../../../utils/Normalize';
 
-const GuestProfile = ({ onSubmitLogin, isLoading }) => {
+import type {
+  GuestProfileProps,
+  LoginFormValues,
+} from '../../../../models/ui/Auth';
+
+const GuestProfile: React.FC<GuestProfileProps> = ({
+  onSubmitLogin,
+  isLoading,
+}) => {
+  const initialValues: LoginFormValues = {
+    email: 'john@mail.com',
+    password: 'changeme',
+  };
+
   return (
     <View style={styles.container}>
+      {/* HEADER */}
       <View style={styles.headerArea}>
         <Text style={styles.title}>Giriş Yap</Text>
         <Text style={styles.description}>
-          Alışverişe devam etmek, profil bilgilerini görmek ve hesabını yönetmek
-          için giriş yapman gerekir.
+          Alışverişe devam etmek için giriş yapmanız gerekir, lütfen giriş
+          yapınız 🎉
         </Text>
       </View>
 
+      {/* FORM */}
       <View style={styles.formCard}>
-        <Formik
-          initialValues={{
-            email: 'john@mail.com',
-            password: 'changeme',
-          }}
+        <Formik<LoginFormValues>
+          initialValues={initialValues}
           validationSchema={LoginSchema}
-          onSubmit={values => {
-            onSubmitLogin(values);
-          }}
+          onSubmit={values => onSubmitLogin(values)}
         >
           {({
             values,
@@ -40,6 +52,7 @@ const GuestProfile = ({ onSubmitLogin, isLoading }) => {
             handleSubmit,
           }) => (
             <>
+              {/* EMAIL */}
               <View style={styles.inputWrapper}>
                 <Text style={styles.label}>Email</Text>
                 <TextInput
@@ -52,11 +65,12 @@ const GuestProfile = ({ onSubmitLogin, isLoading }) => {
                   keyboardType="email-address"
                   style={styles.input}
                 />
-                {touched.email && errors.email ? (
+                {touched.email && errors.email && (
                   <Text style={styles.errorText}>{errors.email}</Text>
-                ) : null}
+                )}
               </View>
 
+              {/* PASSWORD */}
               <View style={styles.inputWrapper}>
                 <Text style={styles.label}>Şifre</Text>
                 <TextInput
@@ -68,14 +82,15 @@ const GuestProfile = ({ onSubmitLogin, isLoading }) => {
                   secureTextEntry
                   style={styles.input}
                 />
-                {touched.password && errors.password ? (
+                {touched.password && errors.password && (
                   <Text style={styles.errorText}>{errors.password}</Text>
-                ) : null}
+                )}
               </View>
 
+              {/* BUTTON */}
               <TouchableOpacity
                 style={[styles.loginButton, isLoading && styles.disabledButton]}
-                onPress={handleSubmit}
+                onPress={() => handleSubmit()}
                 disabled={isLoading}
               >
                 <Text style={styles.loginButtonText}>
@@ -83,6 +98,7 @@ const GuestProfile = ({ onSubmitLogin, isLoading }) => {
                 </Text>
               </TouchableOpacity>
 
+              {/* INFO */}
               <Text style={styles.infoText}>
                 Demo kullanıcı ile giriş yapabilirsiniz.
               </Text>
@@ -99,73 +115,85 @@ export default GuestProfile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F7F7',
-    paddingHorizontal: 16,
-    paddingTop: 40,
+    backgroundColor: COLORS.lightGray,
+    paddingHorizontal: normalize(16),
+    paddingTop: normalize(40),
   },
+
   headerArea: {
-    marginBottom: 24,
+    marginBottom: normalize(24),
   },
+
   title: {
-    fontSize: 28,
+    fontSize: normalize(28),
     fontWeight: '700',
-    color: '#111111',
-    marginBottom: 8,
+    color: COLORS.black,
+    marginBottom: normalize(8),
   },
+
   description: {
-    fontSize: 15,
-    lineHeight: 22,
-    color: '#666666',
+    fontSize: normalize(15),
+    lineHeight: normalize(22),
+    color: COLORS.gray,
   },
+
   formCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 18,
-    padding: 20,
+    backgroundColor: COLORS.white,
+    borderRadius: normalize(18),
+    padding: normalize(20),
   },
+
   inputWrapper: {
-    marginBottom: 16,
+    marginBottom: normalize(16),
   },
+
   label: {
-    fontSize: 14,
+    fontSize: normalize(14),
     fontWeight: '600',
-    color: '#111111',
-    marginBottom: 8,
+    color: COLORS.black,
+    marginBottom: normalize(8),
   },
+
   input: {
-    height: 52,
-    borderWidth: 1,
-    borderColor: '#E2E2E2',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    fontSize: 15,
-    color: '#111111',
-    backgroundColor: '#FAFAFA',
+    height: normalize(52),
+    borderWidth: normalize(1),
+    borderColor: COLORS.lightGray,
+    borderRadius: normalize(12),
+    paddingHorizontal: normalize(14),
+    fontSize: normalize(15),
+    color: COLORS.black,
+    backgroundColor: COLORS.lightGray,
   },
+
   errorText: {
-    marginTop: 6,
-    fontSize: 12,
+    marginTop: normalize(6),
+    fontSize: normalize(12),
     color: '#D9534F',
   },
+
   loginButton: {
-    height: 52,
-    borderRadius: 12,
-    backgroundColor: '#111111',
+    height: normalize(52),
+    borderRadius: normalize(12),
+    backgroundColor: COLORS.black,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: normalize(8),
   },
+
   disabledButton: {
     opacity: 0.7,
   },
+
   loginButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
+    color: COLORS.white,
+    fontSize: normalize(16),
     fontWeight: '600',
   },
+
   infoText: {
-    marginTop: 14,
-    fontSize: 13,
-    color: '#888888',
+    marginTop: normalize(14),
+    fontSize: normalize(13),
+    color: COLORS.gray,
     textAlign: 'center',
   },
 });
