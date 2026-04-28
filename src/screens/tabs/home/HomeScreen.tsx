@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HomeBanner from './components/HomeBanner';
 import Categories from './components/Categories';
+import BestSellerProducts from './components/BestSellerProducts';
 
 const HomeScreen: React.FC = () => {
   return (
@@ -12,6 +12,9 @@ const HomeScreen: React.FC = () => {
 
       {/* Banner */}
       <HomeBanner />
+
+      {/* Best Seller Products */}
+      <BestSellerProducts />
     </SafeAreaView>
   );
 };

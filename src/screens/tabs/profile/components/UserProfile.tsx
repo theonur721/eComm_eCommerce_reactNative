@@ -40,7 +40,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ onLogoutProfile, user }) => {
       <View style={styles.profileInfo}>
         <Text style={styles.name}>{user?.name}</Text>
         <Text style={styles.email}>{user?.email}</Text>
-        <Text style={styles.email}>Rol: {user?.role}</Text>
+        <Text style={styles.email}>rol: {user?.role}</Text>
 
         <View style={styles.logoContainer}>
           {logos.map((logo, index) => (

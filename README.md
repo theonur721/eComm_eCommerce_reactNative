@@ -1,4 +1,4 @@
-# eComm - ecommerce mobile app
+# eComm - ecommerce
 
 ## kütüphaneler
 

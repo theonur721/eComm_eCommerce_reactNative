@@ -20,5 +20,6 @@ const styles = StyleSheet.create({
   img: {
     width: '100%',
     height: normalize(150),
+    marginVertical: normalize(8),
   },
 });
